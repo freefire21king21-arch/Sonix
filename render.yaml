@@ -1,7 +1,0 @@
-services:
-  - type: web
-    name: my-telegram-bot
-    runtime: php
-    buildCommand: ""
-    startCommand: ""
-    plan: free
