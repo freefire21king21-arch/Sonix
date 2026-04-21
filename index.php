@@ -1,33 +1,30 @@
 <?php
-$API_KEY = '8693233767:AAHHXPWFYmyPNIw0RvVsywOXV3ydnqqFtKM';
-define('API_KEY', $API_KEY);
+$token = "8693233767:AAHHXPWFYmyPNIw0RvVsywOXV3ydnqqFtKM";
 
-function bot($method, $datas = []) {
-    $url = "https://api.telegram.org/bot" . API_KEY . "/" . $method;
-    if (!empty($datas)) {
-        $url .= "?" . http_build_query($datas);
-    }
-    $ch = curl_init($url);
+function bot($method, $data = []) {
+    global $token;
+    $url = "https://api.telegram.org/bot$token/$method";
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-    $response = curl_exec($ch);
+    $res = curl_exec($ch);
     curl_close($ch);
-    return json_decode($response, true);
+    return json_decode($res, true);
 }
 
-$update = json_decode(file_get_contents('php://input'), true);
-if (!$update) {
-    exit;
-}
+$update = json_decode(file_get_contents("php://input"), true);
 
-if (isset($update['message'])) {
-    $chat_id = $update['message']['chat']['id'];
-    $text = $update['message']['text'] ?? '';
+if (isset($update["message"])) {
+    $chat_id = $update["message"]["chat"]["id"];
+    $text = $update["message"]["text"];
 
-    if ($text === '/start') {
-        bot('sendMessage', [
-            'chat_id' => $chat_id,
-            'text' => "مرحباً! البوت يعمل الآن على Render بنجاح 🚀"
+    if ($text == "/start") {
+        bot("sendMessage", [
+            "chat_id" => $chat_id,
+            "text" => "✅ البوت يعمل بنجاح على Render!"
         ]);
     }
 }
